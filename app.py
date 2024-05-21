@@ -3,8 +3,8 @@ import streamlit as st
 # import base64
 
 from app_pages.home_page import main as generate
-from utils.login import main as login_user
-from utils.st_constants import PAGE_CONFIG
+from app_utils.login import main as login_user
+from app_utils.st_constants import PAGE_CONFIG
 
 st.set_page_config(**PAGE_CONFIG)
 
