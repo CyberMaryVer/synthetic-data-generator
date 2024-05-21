@@ -5,7 +5,7 @@ import random
 import streamlit as st
 from datetime import datetime
 
-from app_utils.openai_llm import generate_synthetic_data_batch
+from app_utils.openai_llm import generate_synthetic_data_batch, LANGUAGES
 
 
 def load_examples():
@@ -135,6 +135,7 @@ def generate_synthetic_data_ui():
         st.text_area("Augmentations", value="\n".join(augmentations), height=200, max_chars=1000, disabled=True)
 
         # UI for generating synthetic data
+        language = st.selectbox("Select language", LANGUAGES, index=0)
         data_size = st.slider("How many examples to generate",
                               min_value=1, value=4, max_value=10, step=1)
         gpt4_share = st.slider("GPT-4 share: select 0 for GPT-3.5 Turbo for all examples, 1 for GPT-4.0 for all",
@@ -163,7 +164,8 @@ def generate_synthetic_data_ui():
                                                          data_file,
                                                          gpt4_share,
                                                          save_every,
-                                                         augmentations)
+                                                         augmentations,
+                                                         language)
 
                 st.markdown(f"<p style='color: green;'>Data generated successfully with {data_size} examples.</p>",
                             unsafe_allow_html=True)

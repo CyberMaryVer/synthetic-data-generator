@@ -1,6 +1,6 @@
 import streamlit as st
 from app_utils.openai_llm import set_openai_api_key
-from app_utils.generation import load_examples, setup_augmentations, generate_synthetic_data_ui
+from app_utils.generation import load_examples, generate_synthetic_data_ui
 
 
 def main(admin=None):

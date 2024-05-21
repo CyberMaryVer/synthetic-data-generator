@@ -19,6 +19,19 @@ DEFAULT_AUGMENTATIONS = [
     "Add more sources",
 ]
 
+LANGUAGES = {
+    "RU": "RUSSIAN",
+    "EN": "ENGLISH",
+    "DE": "GERMAN",
+    "FR": "FRENCH",
+    "ES": "SPANISH",
+    "IT": "ITALIAN",
+    "PT": "PORTUGUESE",
+    "NL": "DUTCH",
+    "PL": "POLISH",
+    "TR": "TURKISH",
+}
+
 
 def set_openai_api_key(from_secrets: bool = True, from_env: bool = True):
     if from_secrets:
@@ -62,17 +75,19 @@ def generate_synthetic_data(
         api_key: str = None,
         model: str = "gpt-4o",
         use_random_augmentation: bool = True,
-        augmentations: list = None
+        augmentations: list = None,
+        language: str = "RU"
 ):
     # @markdown ## ▶️ Initialize openai functions
     client = get_client(api_key=api_key)
     augmentations = DEFAULT_AUGMENTATIONS if not augmentations else augmentations
     augmentation = random.choice(augmentations) if use_random_augmentation else ''
+    language = LANGUAGES.get(language, "RUSSIAN")
     prompt = f"""
     TASK:
     Generate a new document from the given template. Use the similar structure. Change all the personal data (name, phone, email), dates, organizations, urls and numbers to generated data.
     - Generated data should be similar to real. Do not use numbers like this: 'phone 555-555-555' or very general names like 'Ivanov'. Use various names, surnames, etc.
-    - The main language of the document is RUSSIAN, but you can include names and surnames in English if required.
+    - The main language of the new document is {language}. Translate all the text to the {language} if needed.
     - Try to make the new document more complex than the original. Add more information.
     {augmentation} in the final document, this should look natural.
 
@@ -128,9 +143,11 @@ def generate_synthetic_data_batch(
         data_file: str = "generated_data.csv",
         gpt4_share: float = 0.5,
         save_every: int = 10,
-        augmentations: list = None
+        augmentations: list = None,
+        language: str = "RU"
 ):
     augmentations = DEFAULT_AUGMENTATIONS if not augmentations else augmentations
+    language = language.upper()
 
     # Create csv for a new dataset or append to the existing one
     data_folder = os.path.join(os.getcwd(), "gen_data")
@@ -164,7 +181,8 @@ def generate_synthetic_data_batch(
         new_document, augmentation = generate_synthetic_data(
             original_text,
             model=random_model,
-            augmentations=augmentations
+            augmentations=augmentations,
+            language=language
         )
         generated_data = pd.concat([generated_data,
                                     pd.DataFrame({'original_index': [random_index],
