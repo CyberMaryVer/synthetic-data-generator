@@ -1,0 +1,17 @@
+# FOR STREAMLIT
+streamlit~=1.21.0
+streamlit-authenticator
+streamlit-on-Hover-tabs
+extra-streamlit-components
+
+# OTHERS
+requests~=2.32.1
+python-dotenv~=1.0.1
+
+# RAG & LLM
+faiss-cpu
+langchain_openai
+langchain~=0.2.0
+pandas~=1.5.3
+pillow~=10.3.0
+openai~=1.30.1
