@@ -168,12 +168,12 @@ def generate_synthetic_data_ui():
                 st.markdown(f"<p style='color: green;'>Data generated successfully with {data_size} examples.</p>",
                             unsafe_allow_html=True)
 
-            st.success("Data generated successfully!")
-            st.dataframe(data)
+        st.success("Data generated successfully!")
+        st.dataframe(data)
 
-            st.download_button(
-                label="Download data",
-                data=data.to_csv(index=False),
-                file_name=data_file,
-                mime="text/csv"
-            )
+        st.download_button(
+            label="Download data",
+            data=data.to_csv(index=False),
+            file_name=data_file,
+            mime="text/csv"
+        )
