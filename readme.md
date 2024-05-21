@@ -93,4 +93,4 @@ Distributed under the APACHE License. See `LICENSE.txt` for more information.
 [Snowflake-url]: https://www.snowflake.com/en/
 
 [Demo]: https://img.shields.io/badge/Demo-0077B5?style=for-the-badge&logo=github&logoColor=white
-[demo-url]: https://share.streamlit.io/cybermaryver/ad_labelling/main/app.py
+[demo-url]: https://synthetic-data-llm-generator.streamlit.app/
