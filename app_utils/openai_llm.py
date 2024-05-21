@@ -133,7 +133,10 @@ def generate_synthetic_data_batch(
     augmentations = DEFAULT_AUGMENTATIONS if not augmentations else augmentations
 
     # Create csv for a new dataset or append to the existing one
-    generated_file = os.path.join(os.getcwd(), data_file)
+    data_folder = os.path.join(os.getcwd(), "gen_data")
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+    generated_file = os.path.join(data_folder, data_file)
     if os.path.exists(generated_file):
         generated_data = pd.read_csv(generated_file)
     else:

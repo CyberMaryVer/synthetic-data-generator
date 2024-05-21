@@ -3,6 +3,7 @@ import os
 import json
 import random
 import streamlit as st
+from datetime import datetime
 
 from app_utils.openai_llm import generate_synthetic_data_batch
 
@@ -102,7 +103,7 @@ def setup_augmentations():
         if is_enabled:
             user_augs.append(user_aug)
 
-    st.write({"Augmentations": user_augs})
+    # st.write({"Augmentations": user_augs})
 
     use_default_augs = False  # st.checkbox("Use default augmentations", value=True)
     augs = [a for a in default_augs if len(a) > 0] if use_default_augs else user_augs
@@ -119,13 +120,20 @@ def generate_synthetic_data_ui():
     if "file_json" not in st.session_state or st.session_state["file_json"] is None:
         st.warning("Please load a file with examples first")
         return
+    if "data_file" not in st.session_state:
+        st.session_state["data_file"] = f"generated_data_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.csv"
+
     examples = st.session_state["file_json"]["examples"]
     entities = st.session_state["file_json"]["entities"]
-    augmentations = setup_augmentations()
+
+    with st.expander("Augmentations Settings"):
+        augmentations = setup_augmentations()
 
     col1, col2 = st.columns((6, 1))
 
     with col1:
+        st.text_area("Augmentations", value="\n".join(augmentations), height=200, max_chars=1000, disabled=True)
+
         # UI for generating synthetic data
         data_size = st.slider("How many examples to generate",
                               min_value=1, value=4, max_value=10, step=1)
@@ -134,22 +142,33 @@ def generate_synthetic_data_ui():
 
         # Default values
         save_every = 10  # st.number_input("Save every", min_value=1, value=10)
-        data_file = "generated_data.csv"  # st.text_input("Data file", value="generated_data.csv")
+        data_file = st.session_state["data_file"]
 
     if st.button("Generate synthetic data"):
-        progress = st.progress(0)
-        with st.spinner("Generating synthetic data..."):
-            for i in range(data_size):
-                progress.progress((i + 1) / data_size)
-                data = generate_synthetic_data_batch(examples,
-                                                     1,
-                                                     data_file,
-                                                     gpt4_share,
-                                                     save_every,
-                                                     augmentations)
+        st.info("Please wait while the data is being generated...")
+        col1, col2 = st.columns((6, 1))
+        with col2:
+            status_placeholder = st.empty()
+            progress = st.progress(0)
 
-            st.markdown(f"<p style='color: green;'>Data generated successfully with {data_size} examples.</p>",
-                        unsafe_allow_html=True)
+        with col1:
+            with st.spinner("Generating synthetic data..."):
+                for i in range(data_size):
+                    with status_placeholder:
+                        st.markdown(f"<p style='color: green;'>Generating example {i + 1} / {data_size}</p>",
+                                    unsafe_allow_html=True)
+                    progress.progress((i + 1) / data_size)
+                    data = generate_synthetic_data_batch(examples,
+                                                         1,
+                                                         data_file,
+                                                         gpt4_share,
+                                                         save_every,
+                                                         augmentations)
+
+                st.markdown(f"<p style='color: green;'>Data generated successfully with {data_size} examples.</p>",
+                            unsafe_allow_html=True)
+
+            st.success("Data generated successfully!")
             st.dataframe(data)
 
             st.download_button(
