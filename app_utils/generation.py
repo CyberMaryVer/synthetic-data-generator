@@ -13,9 +13,12 @@ def load_examples():
         st.session_state["file_json"] = None
     if "random_example" not in st.session_state:
         st.session_state["random_example"] = ""
+    if "data_file" not in st.session_state:
+        st.session_state["data_file"] = None
 
     file_upload_placeholder = st.empty()
     form_placeholder = st.empty()
+    info_placeholder = st.empty()
 
     if st.session_state["file_json"]:
         with file_upload_placeholder:
@@ -24,6 +27,7 @@ def load_examples():
         if reset:
             st.session_state["file_json"] = None
             st.session_state["random_example"] = ""
+            st.session_state["data_file"] = None
 
     if st.session_state["file_json"] is None:
         with file_upload_placeholder:
@@ -35,8 +39,10 @@ def load_examples():
                 data_keys = data[0].keys()
 
                 with form_placeholder:
-                    if main_key_name not in data_keys or entities_key_name not in data_keys:
+                    if main_key_name not in data_keys:
                         main_key_name = st.selectbox("Select the main key name", list(data_keys))
+
+                    if entities_key_name not in data_keys:
                         entities_key_name = st.selectbox("Select the entities key name", list(data_keys))
 
                     submitted = st.button("Submit")
@@ -66,6 +72,12 @@ def load_examples():
             example = st.session_state["random_example"]
             html = _generate_html_with_random_example(example)
             st.markdown(html, unsafe_allow_html=True)
+
+    if st.session_state["file_json"]:
+        with info_placeholder:
+            ex = st.session_state["file_json"]["examples"][0:3]
+            ent = st.session_state["file_json"]["entities"][0:3]
+            st.write({"Examples": ex, "Entities": ent})
 
 
 def setup_augmentations():
@@ -120,7 +132,7 @@ def generate_synthetic_data_ui():
     if "file_json" not in st.session_state or st.session_state["file_json"] is None:
         st.warning("Please load a file with examples first")
         return
-    if "data_file" not in st.session_state:
+    if "data_file" not in st.session_state or st.session_state["data_file"] is None:
         st.session_state["data_file"] = f"generated_data_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.csv"
 
     examples = st.session_state["file_json"]["examples"]
