@@ -3,7 +3,8 @@ import streamlit as st
 import pandas as pd
 from app_utils.st_auth import auth_basic
 
-LOGS = "./logs"
+LOGS_OLD = "./logs"
+LOGS = "./gen_data"
 ADMIN = "mary"
 
 
