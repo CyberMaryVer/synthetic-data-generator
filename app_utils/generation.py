@@ -30,6 +30,30 @@ def load_examples():
             st.session_state["data_file"] = None
 
     if st.session_state["file_json"] is None:
+        st.write("""Please load a file with examples
+        File should be a JSON file with the following structure:
+        [
+            {
+                "text": "Example text",
+                "entities": ["entity1", "entity2"]
+            },
+            ...
+        ]
+        If the keys are different, you can select them below.
+        If you want to test the functionality, just check the box below 'Use test data' and click 'Submit'
+        """)
+        if st.checkbox("Use test data"):
+            examples = [
+                {"text": "John Doe is a smart person", "entities": ["John Doe"]},
+                {"text": "Jane Doe is a doctor", "entities": ["Jane Doe"]},
+                {"text": "John Smith is a good person", "entities": ["John Smith"]}
+            ]
+            st.session_state["file_json"] = {"examples": [item["text"] for item in examples],
+                                             "entities": [item["entities"] for item in examples]}
+            st.session_state["random_example"] = random.choice(st.session_state["file_json"]["examples"])
+        else:
+            st.session_state["file_json"] = None
+
         with file_upload_placeholder:
             file_json = st.file_uploader("Upload a JSON file", type=["json"])
             main_key_name = "text"
