@@ -88,7 +88,6 @@ def generate_synthetic_data(
     Generate a new document from the given template. Use the similar structure. Change all the personal data (name, phone, email), dates, organizations, urls and numbers to generated data.
     - Generated data should be similar to real. Do not use numbers like this: 'phone 555-555-555' or very general names like 'Ivanov'. Use various names, surnames, etc.
     - The main language of the new document is {language}. Translate all the text to the {language} if needed.
-    - Try to make the new document more complex than the original. Add more information.
     {augmentation} in the final document, this should look natural.
 
     TEMPLATE:

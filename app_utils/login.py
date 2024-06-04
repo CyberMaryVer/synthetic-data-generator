@@ -8,6 +8,21 @@ ADMIN = "mary"
 
 
 def show_logs():
+    """
+    - File selector for dir ./gen_data/*.csv
+    - Read selected file and display it as a dataframe
+    """
+    logs = [os.path.join(LOGS, f) for f in os.listdir(LOGS)]
+    log_keys = [f.split("_")[-1].replace(".csv", "") for f in logs]
+
+    log_key = st.selectbox("Выберите лог", log_keys)
+    log = [f for f in logs if log_key in f][0]
+
+    df = pd.read_csv(log)
+    st.dataframe(df, width=1000, use_container_width=True)
+
+
+def show_logs_old():
     logs = [os.path.join(LOGS, f) for f in os.listdir(LOGS)
             if (f.endswith(".csv") and "ai_answers" in f)]
     log_keys = [f.split("_")[-1].replace(".csv", "") for f in logs]

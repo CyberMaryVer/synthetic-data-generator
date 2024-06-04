@@ -7,6 +7,16 @@ from datetime import datetime
 
 from app_utils.openai_llm import generate_synthetic_data_batch, LANGUAGES
 
+DOC1 = """
+John Doe is a smart person. He is a doctor. He works at the clinic. He lives in New York."""
+ENTS1 = ["John Doe", "doctor", "clinic", "New York"]
+DOC2 = """
+The company was founded in 1990. The company is located in London. The company has 100 employees."""
+ENTS2 = ["1990", "London", "100 employees"]
+DOC3 = """
+Send the parcel to DigitalOcean, 101 Avenue of the Americas, New York, NY 10013, USA."""
+ENTS3 = ["DigitalOcean", "101 Avenue of the Americas", "New York", "NY 10013", "USA"]
+
 
 def load_examples():
     if "file_json" not in st.session_state:
@@ -44,9 +54,9 @@ def load_examples():
         """)
         if st.checkbox("Use test data"):
             examples = [
-                {"text": "John Doe is a smart person", "entities": ["John Doe"]},
-                {"text": "Jane Doe is a doctor", "entities": ["Jane Doe"]},
-                {"text": "John Smith is a good person", "entities": ["John Smith"]}
+                {"text": DOC1, "entities": ENTS1},
+                {"text": DOC2, "entities": ENTS2},
+                {"text": DOC3, "entities": ENTS3}
             ]
             st.session_state["file_json"] = {"examples": [item["text"] for item in examples],
                                              "entities": [item["entities"] for item in examples]}
@@ -122,8 +132,9 @@ def setup_augmentations():
     aug9 = "Add few more phone numbers, emails, etc."  # @param {type: "string"}
     aug10 = "Add one more organization (clinic, company, university, etc.)"  # @param {type: "string"}
     aug11 = "Add one more location (city, country, etc.)"  # @param {type: "string"}
+    aug12 = "Try to make the new document more complex than the original. Add more information"  # @param {type: "string"}
 
-    default_augs = [aug1, aug2, aug3, aug4, aug5, aug6, aug7, aug8, aug9, aug10, aug11]
+    default_augs = [aug1, aug2, aug3, aug4, aug5, aug6, aug7, aug8, aug9, aug10, aug11, aug12]
     user_augs = []
 
     for i, aug in enumerate(default_augs):
